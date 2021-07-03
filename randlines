@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+import argparse
+import random
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "input",
+    help="the input file in which the unrandomised lines are located"
+)
+parser.add_argument(
+    "-o",
+    "--output",
+    help="the file in which the randomised lines from the input file will be pasted. If a matching filename does not exist, one will be created."
+)
+parser.add_argument(
+    "-e",
+    "--empty",
+    help="include, if any, the empty lines from the input file in the randomised output",
+    action="store_true"
+)
+parser.add_argument(
+    "-d",
+    "--display",
+    help="echoes the output to the terminal",
+    action="store_true"
+)
+args = parser.parse_args()
+
+final_lines = [] # list of final lines in the correct (random) order
+empty_lines = [] # list of line indexes in input file that are empty
+
+with open(args.input, 'r') as input_file:
+    lines = input_file.readlines()
+    if args.empty is False:    
+        for idx, line in enumerate(lines):
+            if line.isspace():
+                empty_lines.append(idx)  
+        """Reversing the list of indexes as when removing the indexes from lines, removing early values would cause
+        later values to shift down the list, essentially taking 1 away from their indexes.
+        This would cause the wrong values to be removed."""
+        empty_lines.reverse()
+        """Doing lines.pop(idx) above would cause problems, as
+        it would have been being mutated while it was still being looped through."""
+        for ee in empty_lines:
+            lines.pop(ee)
+
+    final_lines = [''] * len(lines)
+    for line in lines:
+        while True:
+            rand = random.randint(0, len(final_lines)-1)
+            if final_lines[rand] == '':
+                break
+        final_lines[rand] = line
+
+if args.display is True:
+    for line in final_lines:
+        print(line, end='')
+
+if args.output:
+    # Write the randomised lines to the specified output file location.
+    with open(args.output, "w+") as output_file:
+        for line in final_lines:
+            output_file.write(line)
+
