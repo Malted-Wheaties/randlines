@@ -6,7 +6,7 @@ A tiny command line utility to randomise the order of lines in a file
 git clone https://github.com/Malted-Wheaties/randlines
 cd randlines
 sudo chmod a+x randlines
-cp randlines /usr/local/bin
+sudo cp randlines /usr/local/bin
 ```
 
 ## Usage
